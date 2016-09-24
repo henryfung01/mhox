@@ -1,0 +1,10 @@
+require("ConfigMap")
+require("Util")
+require("BehaviourTree")
+HeroBT=require("HeroBT")
+require("GameManager")
+
+CharacterDefine=require("CharacterDefine")
+Actor=require("Actor")
+Character=require("Character")
+FightView=require("FightView")
