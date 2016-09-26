@@ -1,20 +1,42 @@
- local BH_INVALID=0
- local BH_SUCCESS=1
- local BH_FAILURE=2
- local BH_RUNNING=3
- local BH_ABORTED=4
+ BH_INVALID=0
+ BH_SUCCESS=1
+ BH_FAILURE=2
+ BH_RUNNING=3
+ BH_ABORTED=4
 
  Behavior=class("Behavior")
+
+local debug=false
+
+function debug_print(...)
+	if debug then
+		print(...)
+	end
+end
 
  function Behavior:ctor(name)
  	self.status=BH_INVALID
  	self.name=name
  	self.type="Behavior"
- 	print(" function Behavior:ctor(name)")
  end
 
  function Behavior:update()
- 	print("should implement update")
+ 	--debug_print("should implement update")
+ 	if not self:preCondition() then
+ 		print(self.name,"  preCondition failure")
+ 		print(self.name,"  preCondition failure")
+		print(self.name,"  preCondition failure")
+ 		print(self.name,"  preCondition failure")
+ 		print(self.name,"  preCondition failure")
+		return BH_FAILURE
+	end
+	if self._updateFunc then
+		return self:_updateFunc()
+	end
+ end
+
+ function Behavior:setUpdateFunc(func)
+ 	self._updateFunc=func
  end
 
  function Behavior:onInitialize()
@@ -25,12 +47,35 @@
 
  end
 
+ function Behavior:preCondition() 
+ 	return true
+ end
+
  function Behavior:tick()
- 	print(self.name)
+ 	print("Behavior:tick() self.name: ",self.name)
+ 	print("Behavior:tick() self.name: ",self.name)
+ 	print("Behavior:tick() self.name: ",self.name)
  	if self.status~=BH_RUNNING then 
  		self:onInitialize()
  	end
  	self.status=self:update()
+ 	if self.name=="movetoAction" then
+ 		print("movetoAction return status: ",self.status)
+ 		print("movetoAction return status: ",self.status)
+
+	print("movetoAction return status: ",self.status)
+	print("movetoAction return status: ",self.status)
+print("movetoAction return status: ",self.status)
+
+	print("movetoAction return status: ",self.status)
+
+ 	end
+ 	if self.status~=BH_FAILURE then
+ 		print("self.status~=BH_FAILURE self.name: ",self.name)
+ 		print("self.status~=BH_FAILURE self.name: ",self.name)
+ 		print("self.status~=BH_FAILURE self.name: ",self.name)
+ 	end
+ 	assert(self.status~=nil)
  	if self.status~=BH_RUNNING then
  		self:onTerminate(self.status)
  	end
@@ -179,9 +224,10 @@ function Sequence:onInitialize()
 end
 
 function Sequence:update()
-	local temp=0
+	if not self:preCondition() then
+		return BH_FAILURE
+	end
 	while true do
-		temp=temp+1
 		local curChild=self.children[self.curChildIndex]
 		
 		local status=curChild:tick()
@@ -209,12 +255,36 @@ function Selector:onInitialize()
 end
 
 function Selector:update()
+	if not self:preCondition() then
+		print("BH_FAILURE: ",self.name)
+		print("BH_FAILURE: ",self.name)
+		print("BH_FAILURE: ",self.name)
+		print("BH_FAILURE: ",self.name)
+		print("BH_FAILURE: ",self.name)
+		print("BH_FAILURE: ",self.name)
+		return BH_FAILURE
+	end
+
 	while true do
 		--print("#self.children: ",#self.children)
 		--print(self.curChildIndex)
 		local curChild=self.children[self.curChildIndex]
 		local status=curChild:tick()
 		if status~=BH_FAILURE then
+			if self.name=="cmdSelector" then
+		print("curChild.name: ",curChild.name)
+		print("status status status status: ",status)
+		print("curChild.name: ",curChild.name)
+		print("status status status status: ",status)
+		print("curChild.name: ",curChild.name)
+		print("status status status status: ",status)
+		print("curChild.name: ",curChild.name)
+		print("status status status status: ",status)
+		print("curChild.name: ",curChild.name)
+		print("status status status status: ",status)
+		print("curChild.name: ",curChild.name)
+		print("status status status status: ",status)
+			end	
 			return status
 		end
 		self.curChildIndex=self.curChildIndex+1

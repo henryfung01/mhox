@@ -14,7 +14,7 @@ local posV={
 {350,300},
 {400,300},
 {1400,300},
-{1500,300},
+{1100,100},
 {1600,300}
 }
 
@@ -43,11 +43,29 @@ function FightView:ctor()
 
 	self.heros[1]:setPosition(900,500)
 
-	-- self.heros[1].bt=HeroBT.new(self.heros[1]) --bt : behavior tree
- --    local delay = cc.DelayTime:create(GAMEFRAME*50) --2*GAMEFRAME
- --    local sequence = cc.Sequence:create(delay, cc.CallFunc:create(function() self.heros[1]:update() end ))
- --    local action = cc.RepeatForever:create(sequence)
- --    self.heros[1]:runAction(action)
+	GameManager:setOperateHero(self.heros[1])
+for i=1,3 do
+	self.heros[i].bt=HeroBT.new(self.heros[i]) --bt : behavior tree
+    local delay = cc.DelayTime:create(GAMEFRAME*50) --2*GAMEFRAME
+    local sequence = cc.Sequence:create(delay, cc.CallFunc:create(function() self.heros[i]:update() end ))
+    local action = cc.RepeatForever:create(sequence)
+    self.heros[i]:runAction(action)
+end
+ 	GameManager:init( )
+end
+
+
+function FightView:setBtnInfo()
+	btns={}
+	local function onBtnClicked(i)
+		self.heros[i].cmd=Cmd.new(CMD_SUPERATTACK)
+	end
+
+	for i=1,n do
+		btns[i]=ccui.Button:create()
+		self:addChild(btns[i],100)
+		btns[i]:addClickEventListener(function() onBtnClicked(i)  end)
+	end
 end
 
 function FightView:registerTouchListener()
@@ -77,21 +95,23 @@ function FightView:registerTouchListener()
 		local cam=scene:getDefaultCamera()
 		local x,y=cam:getPosition()
 		cam:setPosition(x-offx,y-offy)
-		print("onTouchMoved pos: ",loc.x,loc.y)
+		--print("onTouchMoved pos: ",loc.x,loc.y)
 	end
 
 	local function onTouchEnded(touch,event)
 		local loc=touch:getLocation()
-		print("onTouchEnded pos: ",loc.x,loc.y)
+		--print("onTouchEnded pos: ",loc.x,loc.y)
 		local scene=director:getRunningScene()
 		local camX,camY=scene:getDefaultCamera():getPosition()
-		print("end cam pos",camX,camY)
+		--print("end cam pos",camX,camY)
 		local ws=director:getWinSize()
 		local des=cc.p(loc.x+camX-ws.width/2,loc.y+camY-ws.height/2)
 		--print("des ",des.x,des.y)
 		--print("self.heros[1].pos: ",self.heros[1]:getPosition())
 		if not self.bMoved then
-			GameManager:onTouch(loc)
+			--self.heros[1]:stopAllActions()
+			--self.heros[1]:findWayTo(des)
+			GameManager:onTouch(des)
 		end
 	end
 

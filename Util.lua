@@ -53,3 +53,26 @@ function Util.genRandomWalkablePos()
     return Util.gridToPos(gridPos)
 end
 
+function Util.getGridRowColFromPos(pos)
+	local row=ConfigMap.Height-math.ceil(pos.y/ConfigMap.mapGridH)+1
+	local col=math.ceil(pos.x/ConfigMap.mapGridW)
+	return row,col
+end
+
+function Util.isWalkable(pos)
+	local row,col=Util.getGridRowColFromPos(pos)
+--	while true do
+	--	print("row,col ",row,"  ",col)
+	--end
+	local gridPos=(row-1)*ConfigMap.Width+col
+	return 1==ConfigMap.data[gridPos]
+end
+
+function  Util.isPointInRect(p,rect)
+	if p.x>=rect.cen.x-rect.hw and p.x<=rect.cen.x+rect.hw
+		and p.y>=rect.cen.y-rect.hh and p.y<=rect.cen.y+rect.hh then
+		return true
+	end
+	return false
+end
+
